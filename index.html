@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Track User Location</title>
+  <script>
+    function redirectToAppSheet(lat, lon) {
+      const appSheetUrl = 'https://www.appsheet.com/start/000b6724-dca8-426e-97fc-bcf3d146f126?platform=desktop';
+      
+      fetch('https://yourserver.com/log_location', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ latitude: lat, longitude: lon })
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = appSheetUrl;
+        } else {
+          alert('Failed to log location');
+        }
+      }).catch(error => {
+        console.error('Error logging location:', error);
+        alert('Error logging location');
+      });
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          redirectToAppSheet(lat, lon);
+        }, (error) => {
+          console.error('Error getting location:', error);
+          alert('Error getting location');
+        });
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
+  </script>
+</head>
+<body onload="getLocation()">
+  <h1>Redirecting to AppSheet...</h1>
+</body>
+</html>
